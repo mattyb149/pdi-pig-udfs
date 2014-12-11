@@ -1,4 +1,4 @@
-package pdi.pig;
+package pdi.bridge;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class KettleBridge {
 
-  private static final String NO_KETTLE = "Couldn't find PDI_HOME";
+  private static final String NO_KETTLE = "Couldn't find KETTLE_HOME";
 
   private static String KETTLE_HOME;
 
@@ -29,9 +29,9 @@ public class KettleBridge {
       return KETTLE_CLASS_LOADER;
     }
 
-    KETTLE_HOME = System.getProperty( "PDI_HOME", null );
+    KETTLE_HOME = System.getProperty( "KETTLE_HOME", null );
     if ( KETTLE_HOME == null ) {
-      KETTLE_HOME = System.getenv( "PDI_HOME" );
+      KETTLE_HOME = System.getenv( "KETTLE_HOME" );
       if ( KETTLE_HOME == null || KETTLE_HOME.isEmpty() ) {
         throw new Exception( NO_KETTLE );
       }
@@ -66,7 +66,7 @@ public class KettleBridge {
       new FilenameFilter() {
         @Override
         public boolean accept( File dir, String name ) {
-          return ( name.startsWith( "pdi-runner" ) && name.endsWith( ".jar" ) );
+          return ( name.startsWith( "pdi-bridge" ) && name.endsWith( ".jar" ) );
         }
       } )
       ) {
@@ -120,9 +120,6 @@ public class KettleBridge {
     }
     if ( System.getProperty( "KETTLE_PLUGIN_BASE_FOLDERS", null ) == null ) {
       String pluginFolder = new File( KETTLE_HOME + "plugins" ).toURI().toString();
-      /*if ( pluginFolder.endsWith( File.separator ) ) {
-        pluginFolder = pluginFolder.substring( 0, pluginFolder.length()-1 );
-      }*/
       System.setProperty( "KETTLE_PLUGIN_BASE_FOLDERS", pluginFolder );
     }
     Thread.currentThread().setContextClassLoader( getKettleClassloader() );

@@ -10,6 +10,7 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
+import pdi.bridge.KettleBridge;
 
 public class RunKettleTrans extends EvalFunc<Tuple> {
 
