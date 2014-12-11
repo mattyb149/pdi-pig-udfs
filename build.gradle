@@ -1,0 +1,12 @@
+def target = project.name
+task udf (dependsOn: subprojects.collect { ":$it.name:jar" }, type: Zip) {
+
+    baseName = target
+    into("/") {
+        from {
+            subprojects.collect {
+                it.tasks.jar.archivePath
+            }
+        }
+    }
+}

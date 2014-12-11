@@ -1,0 +1,74 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+// Keep Java source compatibility at 1.6 unless you absolutely need 7+ features, as this will 
+// ensure maximum supportability and compatibility for your plugin.
+sourceCompatibility = JavaVersion.VERSION_1_6
+
+version = '1.0'
+
+// External property (deprecated in Gradle 2.x) for Kettle and metastore versions. If you wish to 
+// put your plugin in the Marketplace against the current revision (say, 5.0.x), use the latest
+// release tag
+ext.kettle_dependency_version = 'TRUNK-SNAPSHOT'//'5.2.0.2-84'
+
+// This adds the Pentaho repositories and Maven Central. The official list of repos is currently
+// kept in GitHub at pentaho/subfloor/master-copies/ivysettings.xml, but if we move to Maven
+// you will want to see the common POM.
+repositories {
+  maven {
+    url 'http://nexus.pentaho.org/content/groups/omni/'
+  }
+  mavenLocal()
+  mavenCentral()
+}
+
+configurations {
+  zip
+}
+
+
+dependencies {
+  // Put compile-time dependencies here. This will include anything that Kettle provides that you
+  // do not need to override, and usually includes kettle-core, kettle-engine, kettle-ui-swt, and metastore
+  compile("pentaho-kettle:kettle-core:${project.ext.kettle_dependency_version}")
+  compile("pentaho-kettle:kettle-engine:${project.ext.kettle_dependency_version}")
+  compile("pentaho:metastore:${project.ext.kettle_dependency_version}")
+ 
+  // Put runtime dependencies here using the runtime() directive. Example:
+  
+  // Put runtime overrides of compile-time dependencies here. Often this will include the runtime() dependencies plus
+  // any overrides of JARs in the normal Kettle classloader. Example:
+  compile fileTree(dir: 'lib-dist', include: '*.jar')
+  
+  testCompile 'junit:junit:4.10'
+}
+
+// This task builds a PDI plugin in the correct format, a ZIP with the plugin JAR at the root and a lib/ folder containing
+// all third-party dependencies
+task plugin(dependsOn:jar, type: Zip) {
+  into("${project.name}/") {
+    from jar.outputs.files
+    from fileTree(dir: 'package-res')
+  }
+  
+  // The list of JARs in the lib/ folder is the complement of the intersection of the compile and runtime dependencies,
+  // plus the JARs in the runtimeWithoutCompile config
+  // The list of JARs in the lib/ folder is the complement of the intersection of the compile and runtime dependencies,
+  // plus the JARs in the runtimeWithoutCompile config
+  /*def compileDeps = configurations.compile.resolve()
+  def providedDeps = configurations.provided.resolve()
+  def leftovers = compileDeps - providedDeps
+    into("${project.name}/lib") {
+    from leftovers
+  }*/
+}
+
+artifacts {
+  zip plugin
+}
+
+task createGradleWrapper(type: Wrapper) {
+  gradleVersion = '2.1'
+}
