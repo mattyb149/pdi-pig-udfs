@@ -8,29 +8,16 @@ sourceCompatibility = JavaVersion.VERSION_1_6
 
 version = '1.0'
 
-// External property (deprecated in Gradle 2.x) for Kettle and metastore versions. If you wish to 
-// put your plugin in the Marketplace against the current revision (say, 5.0.x), use the latest
-// release tag
+// External property (deprecated in Gradle 2.x) for dependency versions.
 ext.pig_dependency_version = '0.14.0'
 ext.hadoop_common_version = '2.3.0'
 
-// This adds the Pentaho repositories and Maven Central. The official list of repos is currently
-// kept in GitHub at pentaho/subfloor/master-copies/ivysettings.xml, but if we move to Maven
-// you will want to see the common POM.
-repositories {
-  maven {
-    url 'http://nexus.pentaho.org/content/groups/omni/'
-  }
-  mavenLocal()
-  mavenCentral()
-}
-
 dependencies {
-  // Put compile-time dependencies here. This will include anything that Kettle provides that you
-  // do not need to override, and usually includes kettle-core, kettle-engine, kettle-ui-swt, and metastore
+  // Put compile-time dependencies here.
   compile("org.apache.pig:pig:${project.ext.pig_dependency_version}")
-  compile("org.apache.hadoop:hadoop-annotations:${hadoop_common_version}")
-  compile("org.apache.hadoop:hadoop-auth:${hadoop_common_version}")
+  // Depending on your version of Hadoop you might need the following two dependencies:
+  //compile("org.apache.hadoop:hadoop-annotations:${hadoop_common_version}")
+  //compile("org.apache.hadoop:hadoop-auth:${hadoop_common_version}")
   compile("org.apache.hadoop:hadoop-common:${project.ext.hadoop_common_version}")
     
   // Put runtime dependencies here using the runtime() directive. Example:
