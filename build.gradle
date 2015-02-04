@@ -12,6 +12,11 @@ version = '1.0'
 ext.pig_dependency_version = '0.14.0'
 ext.hadoop_common_version = '2.3.0'
 
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
 dependencies {
   // Put compile-time dependencies here.
   compile("org.apache.pig:pig:${project.ext.pig_dependency_version}")
